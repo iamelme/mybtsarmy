@@ -269,7 +269,7 @@ function sl_get_ip() {
  */
 function get_liked_icon() {
 	/* If already using Font Awesome with your theme, replace svg with: <i class="fa fa-heart"></i> */
-	$icon = '<span class="icon icon-heart"><svg role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0" y="0" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><path id="heart-full" d="M124 20.4C111.5-7 73.7-4.8 64 19 54.3-4.9 16.5-7 4 20.4c-14.7 32.3 19.4 63 60 107.1C104.6 83.4 138.7 52.7 124 20.4z"/>&#9829;</svg></span>';
+	$icon = '<span class="icon icon-heart2"><svg role="img" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0" y="0" viewBox="0 0 128 128" enable-background="new 0 0 128 128" xml:space="preserve"><path id="heart-full" d="M124 20.4C111.5-7 73.7-4.8 64 19 54.3-4.9 16.5-7 4 20.4c-14.7 32.3 19.4 63 60 107.1C104.6 83.4 138.7 52.7 124 20.4z"/>&#9829;</svg></span>';
 	return $icon;
 } // get_liked_icon()
 /**
@@ -309,13 +309,13 @@ function sl_format_count( $number ) {
  * @since    0.5
  */
 function get_like_count( $like_count ) {
-	$like_text = __( 'Like', 'mybtsarmy' );
+	$like_text = __( 'Love', 'mybtsarmy' );
 	if ( is_numeric( $like_count ) && $like_count > 0 ) { 
 		$number = sl_format_count( $like_count );
 	} else {
 		$number = $like_text;
 	}
-	$count = '<span class="sl-count">' . $number . '</span>';
+	$count = '<span class="love__count">' . $number . '</span>';
 	return $count;
 } // get_like_count()
 // User Profile List

@@ -13,8 +13,8 @@ get_header(); ?>
 
 	<?php 
 		$obj_fb = json_decode( file_get_contents( 'http://graph.facebook.com/?id='.get_permalink() ) );
-		$likes_fb = $obj_fb->shares;
-		update_post_meta($post->ID, 'fb_likes', $likes_fb, false); 
+		$comment_fb = $obj_fb->shares;
+		update_post_meta($post->ID, 'fb_likes', $comment_fb, false); 
 
 		// print_r($obj_fb);
 
