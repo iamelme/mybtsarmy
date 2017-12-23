@@ -67,7 +67,7 @@ get_header(); ?>
 	<section class="section section--padded">
 		<div class="section__inner section__inner2">
 
-			<h1 class="section__title section__title--v">Featured</h1>
+			<h1 class="section__title section__title--v">Featured Fans</h1>
 			
 			<div class="featured">
 				<?php 
@@ -80,7 +80,7 @@ get_header(); ?>
 				$args = [ 
 					    'posts_per_page'      => 5, 
 					    'post_type'           => 'fans',
-					    'meta_key' => 'fb_likes',
+					    'meta_key' => '_post_like_count',
 	    				'orderby' => 'meta_value_num',
 	    				'order' => 'DESC'
 					];
@@ -94,17 +94,13 @@ get_header(); ?>
 
 					    while ( $query->have_posts() ) :  $query->the_post(); ?>
 
-						
-		
-						
 							<div class="featured__item ">
-								<div class="featured__item-inner imgTarget" data-hor="<?php echo $hor = get_post_meta( $post->ID, 'hor', true); ?>" data-ver="<?php echo $ver = get_post_meta( $post->ID, 'ver', true); ?>">
-									<?php the_post_thumbnail(null, array('class' => 'imgSrc')); ?>	
+								<div class="featured__item-inner " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
+									
 								</div>
 								<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="featured__link"></a>
 							</div>
 						
-
 
 					<?php endwhile;
 
@@ -122,7 +118,7 @@ get_header(); ?>
 
 							<p><strong>SUBMIT A LINK OF YOUR PHOTOS OR VIDEOS</strong></p>
 						</div>
-						<a href="" class="featured__link"></a>
+						<a href="<?php echo home_url(); ?>/contact" class="featured__link"></a>
 					</div>
 
 			</div>
@@ -159,19 +155,17 @@ get_header(); ?>
 	
 							<div class="card__item">
 								<div class="card__item--inner">
-									<div class="card__thumb">
+									<div class="card__thumb " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
 										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-											<?php the_post_thumbnail(); ?>
+
 										</a>
 									</div>
 									<div class="card__content">
 										<div class="card__title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
 										<div class="card__meta">
+											<svg class="icon icon-calendar"><use xlink:href="#icon-calendar"></use></svg>
 											<span class="date"><?php the_date('M j, Y'); ?></span>
-											<span class="comment"></span>
-											<span class="views">
-												<?php echo getPostViews(get_the_ID()); ?>															
-											</span>
+											<span class="comment"></span>											
 										</div>
 									</div>
 								</div>
@@ -181,46 +175,19 @@ get_header(); ?>
 
 					wp_reset_postdata();
 
-					endif; 
-
-
-					echo $count > 6 ? '<a href="" class="btn btn-white-o">View More</a>' : '';
+					endif; 					
 
 				?>
 
 				</div>
 
+
+				<?php echo $count > 6 ? '<div class="tx-cnter"><a href="" class="btn btn-default">READ MORE</a></div>' : ''; ?>
+
 			</div>
 
 		</div>
 	</section>
-
-	<script>
-
-		let imgTarget = document.getElementsByClassName("imgTarget"),
-			imgSrc = document.getElementsByClassName("imgSrc");
-
-		function setBackground(from, to, option){
-				Array.prototype.map.call(from, (el, idx) => {
-
-					if(typeof(from) != 'undefined' && from != null) {
-
-						let hor = to[idx].dataset.hor !== "" ? to[idx].dataset.hor : 'center',
-							ver = to[idx].dataset.ver !== "" ? to[idx].dataset.ver : 'center';
-
-						to[idx].style.background = "url(" + el.src + ") " + ver + " " + hor + " / cover no-repeat";
-						if(option == "none") {
-							el.style.display = "none"; } 
-						else { 
-							el.style.opacity = 0;
-						}
-					}
-				});				
-			}
-
-			setBackground(imgSrc, imgTarget, "none");
-
-	</script>
 
 <?php
 get_footer();

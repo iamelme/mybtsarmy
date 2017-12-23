@@ -20,7 +20,7 @@ $current_page = home_url( $wp->request );  ?>
 					
 					<div class="fan">
 						<div class="fan__thumb">
-							<?php the_post_thumbnail(); ?>	
+							<?php the_post_thumbnail('full'); ?>	
 							
 						</div>
 
@@ -69,9 +69,10 @@ $current_page = home_url( $wp->request );  ?>
 							
 							<?php $currentID = get_the_ID();
 
-								$args = ['posts_per_page'      => 5, 
-										'post_type'           => 'fans',
-										'post__not_in' => array($currentID)
+								$args = [
+									'posts_per_page'      => 4, 
+									'post_type'           => 'fans',
+									'post__not_in' => array($currentID)
 								];
 
 								// Query this by weekly
@@ -84,12 +85,15 @@ $current_page = home_url( $wp->request );  ?>
 									while($query->have_posts()) : $query->the_post(); ?>
 
 									<div class="fans__thumb">
-										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-											<?php the_post_thumbnail('medium'); ?>	
-											<div><?php the_title(); ?></div>
-											<svg class="icon icon-eye"><use xlink:href="#icon-eye"></use></svg>
-											<span><?php echo getPostViews(get_the_ID()); ?>	views</span>
-										</a>
+										<div class="fans__thumb--inner" style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
+											<div class="overlay">
+												<div><?php the_title(); ?></div>
+												<svg class="icon icon-eye"><use xlink:href="#icon-eye"></use></svg>
+												<span class="view-count"><?php echo getPostViews(get_the_ID()); ?>	views</span>
+												<?php echo get_simple_likes_button( get_the_ID() ); ?>
+											</div>
+											<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="fans__thumb--link"></a>
+										</div>
 									</div>
 
 
@@ -100,9 +104,11 @@ $current_page = home_url( $wp->request );  ?>
 					</div>
 				</div>
 				<aside class="sidebar">
-					
-					<div class="comment">
+					<div class="info">
 						<?php the_content(); ?>
+					</div>
+					<div class="comment">
+						
 						<p><strong>Please be respectful to all :)</strong></p>
 						<div class="fb-comments" data-href="<?php echo $current_page; ?>" data-numposts="7" data-width="100%"></div>
 					</div>

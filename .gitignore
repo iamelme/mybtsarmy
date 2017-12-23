@@ -3,3 +3,4 @@ assets/
 raw-assets/
 css/
 node_modules/
+.vscode/
