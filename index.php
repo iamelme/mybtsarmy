@@ -41,7 +41,7 @@ get_header(); ?>
 								<div class="bts__member">
 									<div class="bts__thumb ">
 										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-											<?php the_post_thumbnail(); ?>
+											<?php the_post_thumbnail('thumbnail'); ?>
 										</a>
 										
 									</div>
@@ -64,6 +64,7 @@ get_header(); ?>
 		</div>
 	</section>
 
+
 	<section class="section section--padded">
 		<div class="section__inner section__inner2">
 
@@ -75,11 +76,17 @@ get_header(); ?>
 				
 
 
-				print_r($obj_fb);
+				// print_r($obj_fb);
 
 				$args = [ 
 					    'posts_per_page'      => 5, 
-					    'post_type'           => 'fans',
+						'post_type'           => 'fans',
+						'date_query' 			=> array(
+							array(
+								'year' 			=> date( 'Y' ),
+								'week' 			=> date( 'W' ),
+							),
+						),
 					    'meta_key' => '_post_like_count',
 	    				'orderby' => 'meta_value_num',
 	    				'order' => 'DESC'
@@ -116,9 +123,9 @@ get_header(); ?>
 								of the Week.
 							</h2>
 
-							<p><strong>SUBMIT A LINK OF YOUR PHOTOS OR VIDEOS</strong></p>
+							<p><strong>SUBMIT A LINK OF YOUR PHOTOS</strong></p>
 						</div>
-						<a href="<?php echo home_url(); ?>/contact" class="featured__link"></a>
+						<a href="<?php echo home_url(); ?>/submit" class="featured__link"></a>
 					</div>
 
 			</div>
@@ -129,6 +136,9 @@ get_header(); ?>
 
 	<section class="section section--padded section--stroke">
 		<div class="section__inner">
+
+			<h1 class="tc-white tx-cnter">Latest News</h1>
+			<p class="tc-white tx-cnter">Something to read</p>
 			
 			<div class="card">
 				<?php 
@@ -155,18 +165,15 @@ get_header(); ?>
 	
 							<div class="card__item">
 								<div class="card__item--inner">
-									<div class="card__thumb " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
-										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-
-										</a>
-									</div>
+									<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
+										<div class="card__thumb " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">																					
+										</div>
+									</a>
 									<div class="card__content">
 										<div class="card__title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
-										<div class="card__meta">
-											<svg class="icon icon-calendar"><use xlink:href="#icon-calendar"></use></svg>
-											<span class="date"><?php the_date('M j, Y'); ?></span>
+										<!-- <div class="card__meta">
 											<span class="comment"></span>											
-										</div>
+										</div> -->
 									</div>
 								</div>
 							</div>

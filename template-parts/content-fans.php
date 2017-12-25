@@ -1,7 +1,7 @@
 
+
 <?php global $wp;
 $current_page = home_url( $wp->request );  ?>
-
 
 
 

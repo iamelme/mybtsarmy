@@ -9,7 +9,7 @@
 $user_liked =	get_post_meta( $post->ID, '_post_like_count', true);  
 
 
-
+// echo $user_liked;
 
 ?>
 

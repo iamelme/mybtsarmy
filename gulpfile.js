@@ -13,4 +13,5 @@ gulp.task('watch', function () {
   gulp.watch('./raw-assets/scss/*.scss', ['sass', 'watch']);
 });
 
-gulp.task('default',['sass', 'watch']);
+// gulp.task('default',['sass', 'watch']);
+gulp.task('serve:before', ["watch"]);

@@ -15,17 +15,17 @@
 
 	<footer class="footer">
 		<div class="social ">
-			<a href="" class="social__item">
+			<a href="https://www.facebook.com/My-BTS-Army-2104957976393011/" class="social__item" target="_blank">
 				<svg class="icon icon-facebook">
 				  <use xlink:href="#icon-facebook"></use>
 				</svg>
 			</a>
-			<a href="" class="social__item">
+			<a href="" class="social__item" target="_blank">
 				<svg class="icon icon-twitter">
 				  <use xlink:href="#icon-twitter"></use>
 				</svg>
 			</a>
-			<a href="" class="social__item">
+			<a href="" class="social__item" target="_blank">
 				<svg class="icon icon-instagram">
 				  <use xlink:href="#icon-instagram"></use>
 				</svg>

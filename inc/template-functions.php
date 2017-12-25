@@ -185,3 +185,9 @@ add_filter( 'body_class', 'list_body_class', 10, 2 );
 
 
 require get_template_directory() . '/inc/post-like.php';
+
+
+function addDefaultMetaValue($post_id) {
+    add_post_meta($post_id, '_post_like_count', 0, true);
+}
+add_action('save_post_fans', 'addDefaultMetaValue');

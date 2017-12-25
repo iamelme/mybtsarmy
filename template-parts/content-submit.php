@@ -43,7 +43,7 @@
 			</div>
 			
 			<div class="form__group">
-				<textarea name="user-message" id="user-message" cols="30" class="important form__control" ></textarea>
+				<textarea name="user-message" id="user-message" cols="30" class="important form__control form__control-textarea" ></textarea>
 				<label class="form__label" for="user-message">Description (Insert the links of your image and message)</label>				
 			</div>
 			
