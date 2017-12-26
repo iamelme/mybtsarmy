@@ -191,3 +191,135 @@ function addDefaultMetaValue($post_id) {
     add_post_meta($post_id, '_post_like_count', 0, true);
 }
 add_action('save_post_fans', 'addDefaultMetaValue');
+
+
+// form 
+
+function my_enqueue() {
+
+    if ( is_page( 'submit' ) ) {
+
+      wp_enqueue_script( 'ajax-script', get_template_directory_uri() . '/js/user-data.js', NULL, 1.0, true);
+      
+    //   wp_localize_script('ajax-script', 'magicalData', array(
+    //       'nonce' => wp_create_nonce('wp_rest'),
+    //       'siteURL' => get_site_url()
+    //   ));
+
+    wp_localize_script( 'ajax-script', 'my_ajax_object',
+        array( 
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce' => wp_create_nonce('user-submitted')
+        ) );
+    } 
+}
+add_action( 'wp_enqueue_scripts', 'my_enqueue' );
+
+function process_user_generated_post() {
+
+    // check_ajax_referer( 'user-submitted-inquiry', 'security' );
+    check_ajax_referer( 'user-submitted', 'security' );
+
+
+    // var_dump($_POST['security']);
+
+  $response_code = $_POST['captcha'];
+
+  $arr = [
+      'secret' => '6LccYT4UAAAAAJ38F9VZ0nJvbJ8G3MWkYdjxB67r',
+      'response' => $response_code
+  ];
+
+
+  function curl($url, $parameters) {
+      
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+      curl_setopt($ch, CURLOPT_POST, true);
+
+      $headers = [];
+      $headers[] = "Content-Length:" . strlen(http_build_query($parameters));
+
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+      return curl_exec($ch);
+  }
+
+  $returned = curl("https://www.google.com/recaptcha/api/siteverify", $arr);
+
+//   var_dump($returned);
+
+
+  $data = json_decode($returned);
+  $check = $data->success;
+
+//   var_dump($check);
+
+
+  if($check) {
+
+    $email = urldecode($_POST['email']);
+
+      $question_data = array(
+          'post_title' => sanitize_text_field( $_POST[ 'name' ] ),
+          'post_status' => 'draft',
+          'post_type' => 'message',
+          'post_content' =>  sprintf('%s %s %s', 
+              '<br> Email Address: ' . sanitize_text_field( $email ),
+              '<br> Photo Link: ' . sanitize_text_field( $_POST[ 'link' ]),
+              '<br> Message: ' . sanitize_text_field( $_POST[ 'message' ]) )
+      );
+
+
+
+      $post_id = wp_insert_post( $question_data, true );
+
+    //   if ( $post_id ) {
+    //       wp_set_object_terms(
+    //           $post_id,
+    //           sanitize_text_field( $_POST[ 'type' ] ),
+    //           'type',
+    //           true
+    //       );
+    //       update_post_meta( $post_id, 'contact_email', sanitize_email( $_POST[ 'data' ][ 'type' ] ) );
+    //   }
+
+      wp_send_json_success( $post_id );
+
+      wp_die();
+      
+  }
+  
+}
+add_action( 'wp_ajax_process_user_generated_post', 'process_user_generated_post' );
+add_action( 'wp_ajax_nopriv_process_user_generated_post', 'process_user_generated_post' );
+
+
+
+
+function register_user_inquiry() {
+    $labels = [
+        'name' => 'Messages',
+        'singular_name' => 'Message',
+        'add_new_item' => 'Add New Message',
+        'edit_item' => 'Edit Message'
+    ];
+
+    $args = [
+        'labels'                => $labels,
+        'show_ui'               => true,
+        'show_in_rest'          => true,
+        'public'                => true,
+        'has_archive'           => true,
+        'publicly_queryable'    => true,
+        'query_var'             => true,
+        'menu_icon'             => 'dashicons-admin-comments',
+        'supports'              => ['title', 'editor']
+    ];
+
+    register_post_type('message', $args);
+}
+
+add_action('init', 'register_user_inquiry');

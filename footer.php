@@ -37,5 +37,37 @@
 
 <?php wp_footer(); ?>
 
+<?php if(is_front_page() || is_home() ) : ?>
+	
+
+<script>
+		// document.addEventListener('DOMContentLoaded', (function(){
+
+			$('.owl-carousel').owlCarousel({
+			    lazyLoad: true,
+			    margin: 10,
+			    // nav: false,
+			    // navText: ["&larr;","&rarr;"],
+			    responsive : {
+				    0 : {
+			       		items: 2,
+			       		autoplay: true,
+			       		autoplayTimeout: 2300
+				    },
+				    480 : {
+				        items: 3,
+				        autoplay: true,
+			       		autoplayTimeout: 2300
+				    },
+				    768 : {
+				       	items: 7,
+				    }
+				}
+			});
+
+
+		// })() );
+	</script>
+<?php endif; ?>
 </body>
 </html>

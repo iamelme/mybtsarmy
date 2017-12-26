@@ -20,6 +20,12 @@
 
 	<?php wp_head(); ?>
 
+	
+
+	<?php	if(is_page('submit') ) : ?>
+		<script src='https://www.google.com/recaptcha/api.js' async defer></script>	
+	<?php	endif;	?>
+
 </head>
 
 <body <?php body_class(); ?>>
@@ -61,7 +67,7 @@
 			
 		</div>
 
-	<?php else : ?>
+	<?php elseif( !is_page('submit')) : ?>
 		<div id="fb-root"></div>
 		<script>(function(d, s, id) {
 		var js, fjs = d.getElementsByTagName(s)[0];
@@ -88,4 +94,4 @@
 		return t;
 		}(document, "script", "twitter-wjs"));</script>
 	<?php endif; ?>
-	<div class="">
+	<div class="wrapper__inner">

@@ -17,7 +17,7 @@ get_header(); ?>
 	<section class="section">
 		<div class="section__inner">
 
-			<div class="bts">
+			<div class="bts owl-carousel">
 			
 				<?php 
 
@@ -38,7 +38,7 @@ get_header(); ?>
 
 						
 							
-								<div class="bts__member">
+								<div class="bts__member item">
 									<div class="bts__thumb ">
 										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
 											<?php the_post_thumbnail('thumbnail'); ?>
@@ -117,7 +117,7 @@ get_header(); ?>
 
 					<div class="featured__item featured__item--unique">
 						<div class="featured__item-inner">
-							<h2 class="h1 tx-c-white">
+							<h2 class="h1 tc-white">
 								Share &amp;<br>
 								Be Featured <br>
 								of the Week.
@@ -195,6 +195,8 @@ get_header(); ?>
 
 		</div>
 	</section>
+
+	
 
 <?php
 get_footer();

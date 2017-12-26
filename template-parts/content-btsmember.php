@@ -25,6 +25,10 @@
 			) );
 
 		?>
+
+		<div class="comment">			
+			<div class="fb-comments" data-href="<?php echo $current_page; ?>" data-numposts="7" data-width="100%"></div>
+		</div>
 	</div>
 
 

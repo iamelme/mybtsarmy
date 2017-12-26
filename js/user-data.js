@@ -3,16 +3,17 @@
 
 
 
-			var userSubmitButton = document.getElementById( 'user-submit-btn' ),
+			let userSubmitButton = document.getElementById( 'user-submit-btn' ),
 				importants = document.querySelectorAll('.important'),
 				message = document.querySelector('.message');
 
 
-			var adminAjaxRequest = function( formData, action ) {
+			let adminAjaxRequest = function( formData, action ) {
 				
-				var xhp = new XMLHttpRequest();
+				let xhp = new XMLHttpRequest();
 
-				xhp.open('POST', my_ajax_object.ajax_url + '?action='+ action);
+
+				xhp.open('POST', my_ajax_object.ajax_url + '?action='+ action );
 				xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
    				
 
@@ -45,10 +46,10 @@
 				var formData = {
 					'name' : document.getElementById( 'user-name').value,
 					'email' : document.getElementById( 'user-email').value,
-					'phone' : document.getElementById( 'user-phone').value,
+					'link' : document.getElementById( 'user-link').value,
 					'message' : document.getElementById( 'user-message').value,
-					'type' : document.getElementById( 'type').value,
-					'captcha' : document.getElementById( 'g-recaptcha-response').value
+					'captcha' : document.getElementById( 'g-recaptcha-response').value,
+					'security' : my_ajax_object.nonce
 				};
 
 
@@ -60,7 +61,7 @@
 						important.classList.add('error');
 					}
 
-					if(formData.name && formData.email && formData.phone && formData.message && formData.type) {
+					if(formData.name && formData.email && formData.link && formData.message ) {
 						adminAjaxRequest(formData, 'process_user_generated_post');
 						resetAll();					
 						

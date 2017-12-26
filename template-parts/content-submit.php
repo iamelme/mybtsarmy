@@ -31,7 +31,7 @@
 		
 		<form id="user-post" class="form">
 
-			<?php wp_nonce_field( basename( __FILE__ ), 'user-submitted-inquiry'); ?>
+			<?php //wp_nonce_field( basename( __FILE__ ), 'user-submitted-inquiry'); ?>
 
 			<div class="form__group">						
 				<input type="text" name="user-name" id="user-name"  class="important form__control">
@@ -41,15 +41,20 @@
 				<input type="email" name="user-email" id="user-email"  class="important form__control">
 				<label class="form__label" for="user-email">E-mail</label>
 			</div>
+
+			<div class="form__group">
+				<input type="text" name="user-link" id="user-link"  class="important form__control form_links" placeholder="https://www.facebook.com/your-photo">
+				<label class="form__label" for="user-link">Link (Facebook, Twitter or Instagram only)</label>
+			</div>
 			
 			<div class="form__group">
-				<textarea name="user-message" id="user-message" cols="30" class="important form__control form__control-textarea" ></textarea>
-				<label class="form__label" for="user-message">Description (Insert the links of your image and message)</label>				
+				<textarea name="user-message" id="user-message" cols="30" class="important form__control form__control-textarea"></textarea>
+				<label class="form__label" for="user-message">Description</label>				
 			</div>
 			
 
 			<div class="form__group">
-				<div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LemrzwUAAAAADVhbActKKR-wxaVhB5HEJTLWxNS"></div>
+				<div class="g-recaptcha" data-callback="recaptchaCallback" data-sitekey="6LccYT4UAAAAAOtNvtfc-5P0sFN4nFTMhaF9jth1"></div>
 			</div>
 			
 			<div class="tx-cnter">
@@ -64,15 +69,27 @@
 <script>
 	'use strict';
 
-	let formLabel = document.querySelectorAll('.form__label');
+	let formLabel = document.querySelectorAll('.form__label'),
+		formCtrl = document.querySelectorAll('.form__control');
 
-	formLabel.forEach((e)=>{
-		e.addEventListener('click', () => {
-			let labelTarget = e.getAttribute('for');
+	formCtrl.forEach((e)=>{
+
+		if(e.value.length !== 0) {
+			e.nextElementSibling.classList.add("active");
+		} else {
+			e.nextElementSibling.classList.remove("active");
+		}
+			
+
+		e.addEventListener('input', () => {
+			// let labelTarget = e.getAttribute('for');
 			
 			// e.classList.add("active");
+			// alert("wew");
+			e.nextElementSibling.classList.add("active");
 		});
 	});
+
 
 </script>
 

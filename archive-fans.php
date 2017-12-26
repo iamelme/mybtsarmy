@@ -22,7 +22,7 @@ get_header(); ?>
 			<?php
 			/* Start the Loop */
 			$args = [ 
-				'posts_per_page'      	=> -1, 
+				'posts_per_page'      	=> 10, 
 				'post_status' 			=> 'publish',
 				'post_type'           	=> 'fans',
 				'date_query' 			=> array(
@@ -65,13 +65,25 @@ get_header(); ?>
 
 			endwhile;
 
-			the_posts_navigation();
 
 			wp_reset_postdata();
 		endif; ?>
 
 		</main>
-    </section>
+	</section>
+	
+	<!-- <?php $args = array(
+	'type'            => 'weekly',
+	'limit'           => '',
+	'format'          => 'html', 
+	'before'          => '',
+	'after'           => '',
+	'show_post_count' => true,
+	'echo'            => 1,
+	'order'           => 'DESC',
+        'post_type'     => 'fans'
+);
+wp_get_archives( $args ); ?> -->
 
 <?php
 get_footer();
