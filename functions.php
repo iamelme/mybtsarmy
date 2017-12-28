@@ -128,10 +128,10 @@ function mybtsarmy_scripts() {
 		wp_enqueue_script( 'mybtsarmy-owl', get_template_directory_uri() . '/js/owl.carousel.min.js', array(), '20151215', true );
 	}
 
-	if( is_single() ) {
+	// if( !is_page('submit') ) {
 		wp_enqueue_script( 'mybtsarmy-jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' );
 		wp_enqueue_script( 'mybtsarmy-lightbox', get_template_directory_uri() . '/js/lightbox.min.js', array(), '20151215', true );
-	}
+	// }
 	
 	// wp_enqueue_script( 'mybtsarmy-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
 
@@ -142,6 +142,21 @@ function mybtsarmy_scripts() {
 	// }
 }
 add_action( 'wp_enqueue_scripts', 'mybtsarmy_scripts' );
+
+function disable_wp_emojicons() {
+
+	// all actions related to emojis
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+  
+
+  }
+  add_action( 'init', 'disable_wp_emojicons' );
 
 /**
  * Implement the Custom Header feature.

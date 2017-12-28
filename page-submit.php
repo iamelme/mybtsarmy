@@ -22,8 +22,6 @@ get_header(); ?>
 
 				get_template_part( 'template-parts/content', 'submit' );
 
-				the_meta();
-
 			endwhile; // End of the loop.
 			?>
 

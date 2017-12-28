@@ -58,29 +58,63 @@ function fan_cpt_register() {
 		'labels' => $labels,
 		'show_ui' => true,
 		'public' => true,
-		'has_archive' => true,
+		'has_archive' => false,
 		'publicly_queryable' => true,
 		'query_var' => true,
 		'supports' => ['title', 'thumbnail', 'editor']
 	];
 
-	register_post_type('fans', $args); // small letters
+	register_post_type('fan', $args); // small letters
 }
 
 add_action('init', 'fan_cpt_register');
 
-function work_custom_metabox() {
+function img_post_custom_metabox() {
 
     add_meta_box(
         'img_pos',
         __( 'Featured Image position' ),
         'fan_img_meta_callback',
-        'fans',
+        'fan',
         'side',
         'low'
     );
 }
-add_action( 'add_meta_boxes', 'work_custom_metabox' );
+add_action( 'add_meta_boxes', 'img_post_custom_metabox' );
+
+function img_url_custom_metabox() {
+
+    add_meta_box(
+        'fan_img_url',
+        __( 'Photo Link' ),
+        'fan_img_url_meta_callback',
+        'fan',
+        'side',
+        'low'
+    );
+}
+add_action( 'add_meta_boxes', 'img_url_custom_metabox' );
+
+function fan_img_url_meta_callback( $post ) {
+    wp_nonce_field( basename( __FILE__ ), 'img_form' );
+    $img_pos = get_post_meta( $post->ID );
+
+    $fan_img_link = (!empty($img_pos['fan_img_link']) ? esc_attr(  $img_pos['fan_img_link'][0]  ) : null);
+    $fan_email = (!empty($img_pos['fan_email']) ? esc_attr(  $img_pos['fan_email'][0]  ) : null);
+
+    ?>
+
+    <div>
+        <div class="form__group">
+            <input type="text" name="fan_img_link" id="fan_img_link" class="form__control" placeholder="Link" value="<?php echo $fan_img_link; ?>">
+        </div>
+        <div class="form__group">
+            <input type="text" name="fan_email" id="fan_email" class="form__control" placeholder="Email" value="<?php echo $fan_email; ?>">
+        </div>
+    </div>
+
+    <?php 
+}
 
 function fan_img_meta_callback( $post ) {
     wp_nonce_field( basename( __FILE__ ), 'img_form' );
@@ -96,12 +130,7 @@ function fan_img_meta_callback( $post ) {
             <input type="text" name="hor" id="hor" class="form__control" placeholder="Horizontal" value="<?php echo $hor; ?>"> 
             <input type="text" name="ver" id="ver" class="form__control" placeholder="Vertical" value="<?php echo $ver; ?>">
         </div>
-
-
-
-
     </div>
-
 
     <?php 
 }
@@ -121,6 +150,12 @@ function fan_img_meta_save( $post_id) {
     }
     if ( isset( $_POST[ 'ver' ] ) ) {
         update_post_meta( $post_id, 'ver', sanitize_text_field( $_POST[ 'ver' ] ) );
+    }
+    if ( isset( $_POST[ 'fan_email' ] ) ) {
+        update_post_meta( $post_id, 'fan_email', sanitize_text_field( $_POST[ 'fan_email' ] ) );
+    }
+    if ( isset( $_POST[ 'fan_img_link' ] ) ) {
+        update_post_meta( $post_id, 'fan_img_link', sanitize_text_field( $_POST[ 'fan_img_link' ] ) );
     }
 }
 add_action( 'save_post', 'fan_img_meta_save' );
@@ -186,6 +221,9 @@ add_filter( 'body_class', 'list_body_class', 10, 2 );
 
 require get_template_directory() . '/inc/post-like.php';
 
+
+
+// Default value for post like count
 
 function addDefaultMetaValue($post_id) {
     add_post_meta($post_id, '_post_like_count', 0, true);
@@ -260,21 +298,24 @@ function process_user_generated_post() {
 
   if($check) {
 
-    $email = urldecode($_POST['email']);
+    $email = sanitize_email($_POST['email']);
 
       $question_data = array(
           'post_title' => sanitize_text_field( $_POST[ 'name' ] ),
           'post_status' => 'draft',
-          'post_type' => 'message',
-          'post_content' =>  sprintf('%s %s %s', 
+          'post_type' => 'fan',
+          'post_content' =>  sprintf('%s %s', 
               '<br> Email Address: ' . sanitize_text_field( $email ),
-              '<br> Photo Link: ' . sanitize_text_field( $_POST[ 'link' ]),
-              '<br> Message: ' . sanitize_text_field( $_POST[ 'message' ]) )
+              '<br> Description: ' . sanitize_text_field( $_POST[ 'message' ]))
       );
 
 
+        $post_id = wp_insert_post( $question_data, true );
 
-      $post_id = wp_insert_post( $question_data, true );
+        if ( $post_id ) {
+            update_post_meta($post_id, 'fan_img_link', sanitize_text_field( $_POST[ 'link' ]));
+            update_post_meta($post_id, 'fan_img_link', sanitize_text_field( $_POST[ 'link' ]));
+        }
 
     //   if ( $post_id ) {
     //       wp_set_object_terms(
@@ -295,8 +336,6 @@ function process_user_generated_post() {
 }
 add_action( 'wp_ajax_process_user_generated_post', 'process_user_generated_post' );
 add_action( 'wp_ajax_nopriv_process_user_generated_post', 'process_user_generated_post' );
-
-
 
 
 function register_user_inquiry() {
@@ -323,3 +362,136 @@ function register_user_inquiry() {
 }
 
 add_action('init', 'register_user_inquiry');
+
+
+
+// adds global seo input fields
+
+function global_meta_box() {
+
+    $screens = get_post_types( array('public' => true) );
+
+    foreach ( $screens as $screen ) {
+        add_meta_box(
+            'global_meta',
+            __( 'SEO' ),
+            'global_meta_box_callback',
+            $screen,
+            'normal'
+        );
+    }
+}
+
+add_action( 'add_meta_boxes', 'global_meta_box' );
+
+function global_meta_box_callback($post) {
+
+    wp_nonce_field( basename( __FILE__ ), 'global_meta_seo' );
+    $globals = get_post_meta( $post->ID );
+
+    $seo_title = !empty( $globals['seo_title'] ) ? esc_attr(  $globals['seo_title'][0]  ) : null;
+    $meta_desc = !empty( $globals['meta_desc'] ) ? esc_attr(  $globals['meta_desc'][0]  ) : null;
+
+
+    ?>
+
+    <div>
+        <div class="form__group">
+            <input type="text" name="seo_title" id="seo_title" class="form__control" placeholder="SEO title" value="<?php echo $seo_title; ?>"> 
+        </div>
+        <div class="form__group">
+            <textarea name="meta_desc" id="meta_desc" cols="30" rows="5" class="form__control" placeholder="Meta Description" ><?php echo $meta_desc; ?></textarea>
+        </div>
+    </div>
+
+
+    <?php 
+}
+
+function global_meta_save( $post_id) {
+    $is_autosave = wp_is_post_autosave( $post_id );
+    $is_revision = wp_is_post_revision( $post_id );
+    $is_valid_nonce = ( isset( $_POST[ 'global_meta_seo' ] ) && wp_verify_nonce( $_POST[ 'global_meta_seo' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+
+
+    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
+        return;
+    }
+
+    if ( isset( $_POST[ 'meta_desc' ] ) ) {
+        update_post_meta( $post_id, 'meta_desc', sanitize_text_field( $_POST[ 'meta_desc' ] ) );
+    }
+    if ( isset( $_POST[ 'seo_title' ] ) ) {
+        update_post_meta( $post_id, 'seo_title', sanitize_text_field( $_POST[ 'seo_title' ] ) );
+    }
+}
+add_action( 'save_post', 'global_meta_save' );
+
+// Submit page option
+
+function submit_option_meta()
+{
+    global $post;
+
+    if($post->post_name == 'submit')
+    {
+
+  
+        add_meta_box(
+            'submit_page_opt_meta', // $id
+            'Submittion', // $title
+            'submit_option_meta_callback', // $callback
+            'page', // $page
+            'side', // $context
+            'high'); // $priority
+        
+    }
+}
+add_action('add_meta_boxes', 'submit_option_meta');
+
+function submit_option_meta_callback($post) {
+    wp_nonce_field( basename( __FILE__ ), 'submit_opt_nonce' );
+
+    $sub_meta = get_post_meta( $post->ID );
+
+    $submit_opt = !empty( $sub_meta['submit_opt'] ) ? esc_attr(  $sub_meta['submit_opt'][0]  ) : null;
+
+    ?>
+        <select name="submit_opt" id="submit_opt" class="form__control">
+            <option value="0"<?php echo $submit_opt == 0 ? 'selected' : '' ?> > Open</option>
+            <option value="1"<?php echo $submit_opt == 1 ? 'selected' : '' ?> > Close</option>
+        </select>
+    <?php
+}
+
+function submit_option_meta_save( $post_id) {
+    $is_autosave = wp_is_post_autosave( $post_id );
+    $is_revision = wp_is_post_revision( $post_id );
+    $is_valid_nonce = ( isset( $_POST[ 'submit_opt_nonce' ] ) && wp_verify_nonce( $_POST[ 'submit_opt_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+
+
+    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
+        return;
+    }
+
+    if ( isset( $_POST[ 'submit_opt' ] ) ) {
+        update_post_meta( $post_id, 'submit_opt', sanitize_text_field( $_POST[ 'submit_opt' ] ) );
+    }
+}
+add_action( 'save_post', 'submit_option_meta_save' );
+
+
+
+function my_custom_fonts() {
+    echo '<style>
+        .form__group {
+            margin-bottom: 10px;
+        }
+        .form__control {
+            width: 100%;
+            padding: 7px 10px;
+        } 
+    </style>';
+}
+
+add_action('admin_head', 'my_custom_fonts');
