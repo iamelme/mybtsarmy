@@ -8,7 +8,6 @@
  *
  * @package mybtsarmy
  */
-
 global $wp;
 $current_page = home_url( $wp->request );  
 $title = get_post_meta( $post->ID, 'seo_title', true);
@@ -18,27 +17,32 @@ $desc = get_post_meta( $post->ID, 'meta_desc', true);
 <!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-37898730-4"></script>
+	<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag(){dataLayer.push(arguments);}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-37898730-4');
+	</script>
+
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta property="fb:app_id" content="1223316871103396" />
-	<link rel="profile" href="http://gmpg.org/xfn/11">
-
-	<?php 
-
-	?>
-
-
-	<title><?php echo $title; ?></title>
+	<title><?php echo $title; if(is_home() || is_front_page()) bloginfo( ); ?></title>
 	<meta property="og:locale"             content="en_US" />
-	<meta property="og:url"                content="<?php echo $current_page; ?>" />
+	<meta property="og:url"                content="<?php echo $current_page;  ?>" />
 	<meta property="og:type"               content="article" />
-	<meta property="og:title"              content="<?php echo $title; ?>" />
-	<meta property="og:description"        content="<?php echo $desc; ?>" />
+	<meta property="og:title"              content="<?php echo $title; if(is_home() || is_front_page()) bloginfo( ); ?>" />
+	<meta property="og:description"        content="<?php echo $desc; if(is_home() || is_front_page()) bloginfo( 'description' );?>" />
 	<meta property="og:image"              content="<?php the_post_thumbnail_url( 'full' ); ?>" />
 	<meta property="og:site_name" 		   content="<?php bloginfo( 'name' ); ?>" />
 	<meta name="twitter:card" 			   content="summary_large_image" />
 	<meta name="twitter:title" 			   content="<?php echo $title; ?>" />
 	<meta name="twitter:image" 			   content="<?php the_post_thumbnail_url( 'full' ); ?>" />
+	
+	<link rel="profile" href="http://gmpg.org/xfn/11">
 
 	<?php wp_head(); ?>
 
@@ -71,44 +75,12 @@ $desc = get_post_meta( $post->ID, 'meta_desc', true);
 				<div class="menu__inner menu__inner-center">
 					<a href="<?php echo home_url(); ?>" class="branding">
 						<svg id="bts"  x="0px" y="0px"
-							width="80px" height="76.75px" viewBox="0 0 80 76.75" enable-background="new 0 0 80 76.75" xml:space="preserve">
-							<linearGradient id="SVGID_1_" gradientUnits="userSpaceOnUse" x1="6.1553" y1="32.0459" x2="6.1553" y2="49.7124">
-								<stop offset="0%" stop-color="#ededed">
-									<animate attributeName="stop-color" values="#ededed; #999; #ededed" dur="4s" repeatCount="indefinite"></animate>
-								</stop>					
-								<stop offset="100%" stop-color="#999">
-									<animate attributeName="stop-color" values="#999; #ededed; #999" dur="4s" repeatCount="indefinite"></animate>
-								</stop>
-							</linearGradient>
-							<polygon fill="url(#SVGID_1_)" points="7.676,36.886 12.311,36.991 8.61,39.783 9.941,44.221 6.144,41.564 2.333,44.201 
-								3.686,39.771 0,36.959 4.634,36.877 6.167,32.504 "/>
-							<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="73.8447" y1="32.0459" x2="73.8447" y2="49.7124">
-								<stop offset="0%" stop-color="#ededed">
-									<animate attributeName="stop-color" values="#ededed; #999; #ededed" dur="4s" repeatCount="indefinite"></animate>
-								</stop>					
-								<stop offset="100%" stop-color="#999">
-									<animate attributeName="stop-color" values="#999; #ededed; #999" dur="4s" repeatCount="indefinite"></animate>
-								</stop>
-							</linearGradient>
-							<polygon fill="url(#SVGID_2_)" points="75.368,36.886 80,36.991 76.299,39.783 77.631,44.221 73.834,41.563 70.023,44.202 
-								71.376,39.771 67.689,36.959 72.323,36.878 73.856,32.504 "/>
-							<linearGradient id="SVGID_3_" gradientUnits="userSpaceOnUse" x1="27.1304" y1="1.0313" x2="27.1304" y2="75.6069">
-								<stop offset="0%" stop-color="#ededed">
-									<animate attributeName="stop-color" values="#ededed; #999; #ededed" dur="4s" repeatCount="indefinite"></animate>
-								</stop>					
-								<stop offset="100%" stop-color="#999">
-									<animate attributeName="stop-color" values="#999; #ededed; #999" dur="4s" repeatCount="indefinite"></animate>
-								</stop>
-							</linearGradient>
-							<polygon fill="url(#SVGID_3_)" points="17.207,68.759 37.054,76.25 37.054,0.476 17.207,17.457 "/>
-							<linearGradient id="SVGID_4_" gradientUnits="userSpaceOnUse" x1="191.6016" y1="1.0313" x2="191.6016" y2="75.6069">
-								<stop offset="0%" stop-color="#ededed">
-									<animate attributeName="stop-color" values="#ededed; #999; #ededed" dur="4s" repeatCount="indefinite"></animate>
-								</stop>					
-								<stop offset="100%" stop-color="#999">
-									<animate attributeName="stop-color" values="#999; #ededed; #999" dur="4s" repeatCount="indefinite"></animate>
-								</stop>
-							</linearGradient>
+						width="80px" height="76.75px" viewBox="0 0 80 76.75" enable-background="new 0 0 80 76.75" xml:space="preserve">
+							<polygon fill="#fff" points="7.676,36.886 12.311,36.991 8.61,39.783 9.941,44.221 6.144,41.564 2.333,44.201 
+								3.686,39.771 0,36.959 4.634,36.877 6.167,32.504 "/>				
+							<polygon fill="#fff" points="75.368,36.886 80,36.991 76.299,39.783 77.631,44.221 73.834,41.563 70.023,44.202 
+								71.376,39.771 67.689,36.959 72.323,36.878 73.856,32.504 "/>						
+							<polygon fill="#fff" points="17.207,68.759 37.054,76.25 37.054,0.476 17.207,17.457 "/>							
 							<polygon fill="url(#SVGID_4_)" points="201.524,68.759 181.678,76.25 181.678,0.476 201.524,17.457 "/>
 							<line fill="none" x1="40.218" y1="38.645" x2="40.218" y2="38.081"/>
 							<g>
