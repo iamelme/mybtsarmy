@@ -71,8 +71,14 @@ $current_page = home_url( $wp->request );  ?>
 
 								$args = [
 									'posts_per_page'      => 4, 
-									'post_type'           => 'fans',
-									'post__not_in' => array($currentID)
+									'post_type'           => 'fan',
+									'post__not_in' => array($currentID),
+									'date_query' 			=> array(
+										array(
+											'year' 			=> date( 'Y' ),
+											'week' 			=> date( 'W' ),
+										),
+									),
 								];
 
 								// Query this by weekly

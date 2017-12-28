@@ -20,9 +20,14 @@ get_header(); ?>
 
 
 			<?php
+
+			$currentPage = ( get_query_var('paged') ) ? get_query_var('paged') : 1;
+
+
 			/* Start the Loop */
 			$args = [ 
-				'posts_per_page'      	=> 10, 
+				'paged' 				=> $currentPage,
+				'posts_per_page'      	=> 5, 
 				'post_status' 			=> 'publish',
 				'post_type'           	=> 'fans',
 				'date_query' 			=> array(
@@ -43,7 +48,7 @@ get_header(); ?>
 						'value'		=> 'null'
 					)
 				),
-				'orderby'				=> 'meta_value'
+				'orderby'				=> 'meta_value_num'
 			];
 			 
 			
@@ -63,9 +68,21 @@ get_header(); ?>
 			
 				get_template_part( 'template-parts/content-archive-fans' );
 
-			endwhile;
+			endwhile; ?>
 
+				<div class="paginate">
+					<div class="paginate__inner">
+						<?php 
+							echo paginate_links(array(
+							'total' 	=> $query->max_num_pages,
+							'prev_text' => __('&larr;'),
+							'next_text' => __('&rarr;'),
+							));
+						?>
+					</div>
+				</div>	
 
+		<?php
 			wp_reset_postdata();
 		endif; ?>
 

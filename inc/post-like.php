@@ -1,7 +1,8 @@
 <?php
 add_action( 'wp_enqueue_scripts', 'sl_enqueue_scripts' );
 function sl_enqueue_scripts() {
-	wp_enqueue_script( 'simple-likes-public-js', get_template_directory_uri() . '/js/simple-likes-public.js', array( 'jquery' ), '0.5', false );
+	wp_enqueue_script( 'mybtsarmy-jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', array(), '20151215', true );
+	wp_enqueue_script( 'simple-likes-public-js', get_template_directory_uri() . '/js/simple-likes-public.js', array( 'mybtsarmy-jquery' ), '0.5', false );
 	wp_localize_script( 'simple-likes-public-js', 'simpleLikes', array(
 		'ajaxurl' => admin_url( 'admin-ajax.php' ),
 		'like' => __( 'Like', 'mybtsarmy' ),
