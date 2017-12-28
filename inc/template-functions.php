@@ -301,12 +301,11 @@ function process_user_generated_post() {
     $email = sanitize_email($_POST['email']);
 
       $question_data = array(
-          'post_title' => sanitize_text_field( $_POST[ 'name' ] ),
-          'post_status' => 'draft',
-          'post_type' => 'fan',
-          'post_content' =>  sprintf('%s %s', 
-              '<br> Email Address: ' . sanitize_text_field( $email ),
-              '<br> Description: ' . sanitize_text_field( $_POST[ 'message' ]))
+        'post_title' => sanitize_text_field( $_POST[ 'name' ] ),
+        'post_status' => 'draft',
+        'post_type' => 'fan',
+        'post_content' =>  sprintf('%s', 
+            sanitize_text_field( $_POST[ 'message' ]))
       );
 
 
@@ -314,7 +313,7 @@ function process_user_generated_post() {
 
         if ( $post_id ) {
             update_post_meta($post_id, 'fan_img_link', sanitize_text_field( $_POST[ 'link' ]));
-            update_post_meta($post_id, 'fan_img_link', sanitize_text_field( $_POST[ 'link' ]));
+            update_post_meta($post_id, 'fan_email', sanitize_text_field( $email ));
         }
 
     //   if ( $post_id ) {
@@ -491,6 +490,9 @@ function my_custom_fonts() {
             width: 100%;
             padding: 7px 10px;
         } 
+        .hndle  {
+            background: #ccc;
+        }
     </style>';
 }
 
