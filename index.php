@@ -80,7 +80,7 @@ get_header(); ?>
 
 				$args = [ 
 					    'posts_per_page'      => 5, 
-						'post_type'           => 'fans',
+						'post_type'           => 'fan',
 						'date_query' 			=> array(
 							array(
 								'year' 			=> date( 'Y' ),
