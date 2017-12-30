@@ -16,15 +16,19 @@ $current_page = home_url( $wp->request );  ?>
 	<header class="post__header">
 		<h1 class="tx-cnter"><?php the_title(); ?></h1>
 		<div class="post__thumb">
-			<?php the_post_thumbnail( 'full' ); ?>
+			<img src="<?php echo get_post_meta( $post->ID, '_thumb_f', true); ?>" alt="<?php the_title(); ?>">
 		</div>
 		<div class="post__heading">
 			<div class="post__heading-left">
 				
-				<div class="meta">							
+				<div class="meta">			
 					<div class="meta__item">
-						<strong>Posted on: </strong>
-						<span><?php the_date('M j, Y'); ?></span>
+						<?php echo get_avatar( 'elme.delossantos@gmail.com', 40 ); ?> 
+						<span> Aejeong </span>	
+					</div>							
+					<div class="meta__item">
+						
+						<span> / <?php the_date('M j, Y'); ?></span>
 					</div>					
 				</div>
 			</div>
