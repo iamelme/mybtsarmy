@@ -41,7 +41,8 @@ get_header(); ?>
 								<div class="bts__member item">
 									<div class="bts__thumb ">
 										<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-											<?php the_post_thumbnail('thumbnail'); ?>
+											<img src="<?php echo thumb_size(get_post_meta( $post->ID, '_thumb_m', true), 'b'); ?>" alt="<?php the_title(); ?>">
+
 										</a>
 										
 									</div>
@@ -73,10 +74,6 @@ get_header(); ?>
 			<div class="featured">
 				<?php 
 
-				
-
-
-				// print_r($obj_fb);
 
 				$args = [ 
 					    'posts_per_page'      => 5, 
@@ -95,14 +92,23 @@ get_header(); ?>
 
 					$query = new WP_Query( $args );
 
+					$count = 0;
+
 					
 					if ( $query->have_posts() ) :
 					 	
 
 					    while ( $query->have_posts() ) :  $query->the_post(); ?>
 
+
+							<?php 
+								$count++;
+
+								$thumb = get_post_meta( $post->ID, 'fan_img_link', true); 								
+							?>
+
 							<div class="featured__item ">
-								<div class="featured__item-inner " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
+								<div class="featured__item-inner " style="background: url(<?php echo ($count == 1) ? thumb_size($thumb, 'l') : thumb_size($thumb, 'm'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">
 									
 								</div>
 								<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>" class="featured__link"></a>
@@ -137,8 +143,7 @@ get_header(); ?>
 	<section class="section section--padded section--stroke">
 		<div class="section__inner">
 
-			<h1 class="tc-white tx-cnter">Latest News</h1>
-			<p class="tc-white tx-cnter">Something to read</p>
+			<h1 class="tc-white tx-cnter">Something to read</h1>
 			
 			<div class="card">
 				<?php 
@@ -166,14 +171,11 @@ get_header(); ?>
 							<div class="card__item">
 								<div class="card__item--inner">
 									<a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>">
-										<div class="card__thumb " style="background: url(<?php the_post_thumbnail_url('full'); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">																					
+										<div class="card__thumb " style="background: url(<?php echo get_post_meta( $post->ID, '_thumb_f', true); ?>) no-repeat <?php echo get_post_meta( $post->ID, 'hor', true) ? get_post_meta( $post->ID, 'hor', true) : 'center' ?> <?php echo get_post_meta( $post->ID, 'ver', true) ? get_post_meta( $post->ID, 'ver', true) : 'center' ?> / cover">																					
 										</div>
 									</a>
 									<div class="card__content">
 										<div class="card__title"><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></div>
-										<!-- <div class="card__meta">
-											<span class="comment"></span>											
-										</div> -->
 									</div>
 								</div>
 							</div>

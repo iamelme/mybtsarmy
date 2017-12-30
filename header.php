@@ -12,6 +12,7 @@ global $wp;
 $current_page = home_url( $wp->request );  
 $title = get_post_meta( $post->ID, 'seo_title', true);
 $desc = get_post_meta( $post->ID, 'meta_desc', true);
+$thumb = get_post_meta( $post->ID, 'fan_img_link', true) ? get_post_meta( $post->ID, 'fan_img_link', true) : get_post_meta( $post->ID, '_thumb_f', true);
 
 ?>
 <!doctype html>
@@ -30,19 +31,19 @@ $desc = get_post_meta( $post->ID, 'meta_desc', true);
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta property="fb:app_id" content="1223316871103396" />
-	<title><?php echo $title; if(is_home() || is_front_page()) bloginfo( ); ?></title>
+	<title><?php echo $title; echo !is_home() || !is_front_page() ? ' | ' : 'sadas '; bloginfo('name' ); ?></title>
 	<meta property="og:locale"             content="en_US" />
 	<meta property="og:url"                content="<?php echo $current_page;  ?>" />
 	<meta property="og:type"               content="article" />
 	<meta property="og:title"              content="<?php echo $title; if(is_home() || is_front_page()) bloginfo( ); ?>" />
 	<meta property="og:description"        content="<?php echo $desc; if(is_home() || is_front_page()) bloginfo( 'description' );?>" />
-	<meta property="og:image"              content="<?php the_post_thumbnail_url( 'full' ); ?>" />
+	<meta property="og:image"              content="<?php echo $thumb; ?>" />
 	<meta property="og:site_name" 		   content="<?php bloginfo( 'name' ); ?>" />
 	<meta name="twitter:card" 			   content="summary_large_image" />
 	<meta name="twitter:title" 			   content="<?php echo $title; ?>" />
-	<meta name="twitter:image" 			   content="<?php the_post_thumbnail_url( 'full' ); ?>" />
+	<meta name="twitter:image" 			   content="<?php echo $thumb; ?>" />
 	
-	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<link rel="profile" href="https://gmpg.org/xfn/11">
 
 	<?php wp_head(); ?>
 
@@ -125,7 +126,7 @@ $desc = get_post_meta( $post->ID, 'meta_desc', true);
 				<use xlink:href="#icon-facebook"></use>
 				</svg>
 			</a>
-			<a href="" target="_blank" class="social__item" title="Follow Us">
+			<a href="https://twitter.com/mybtsarmytweet" target="_blank" class="social__item" title="Follow Us">
 				<svg class="icon icon-twitter">
 				<use xlink:href="#icon-twitter"></use>
 				</svg>

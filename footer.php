@@ -20,7 +20,7 @@
 				  <use xlink:href="#icon-facebook"></use>
 				</svg>
 			</a>
-			<a href="" class="social__item" target="_blank">
+			<a href="https://twitter.com/mybtsarmytweet" class="social__item" target="_blank">
 				<svg class="icon icon-twitter">
 				  <use xlink:href="#icon-twitter"></use>
 				</svg>
@@ -44,10 +44,7 @@
 		// document.addEventListener('DOMContentLoaded', (function(){
 
 			$('.owl-carousel').owlCarousel({
-			    lazyLoad: true,
 			    margin: 10,
-			    // nav: false,
-			    // navText: ["&larr;","&rarr;"],
 			    responsive : {
 				    0 : {
 			       		items: 2,

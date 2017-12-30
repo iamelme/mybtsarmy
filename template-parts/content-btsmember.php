@@ -3,7 +3,7 @@
 	<header class="post__header">
 		
 		<div class="post__thumb">
-			<?php the_post_thumbnail( 'medium' ); ?>
+			<img src="<?php echo get_post_meta( $post->ID, '_thumb_m', true); ?>" alt="<?php the_title(); ?>">
 		</div>
 		<h1 class="tx-cnter t-light"><?php the_title(); ?></h1>
 		

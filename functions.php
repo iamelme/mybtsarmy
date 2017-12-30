@@ -40,7 +40,7 @@ if ( ! function_exists( 'mybtsarmy_setup' ) ) :
 		 *
 		 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
 		 */
-		add_theme_support( 'post-thumbnails' );
+		// add_theme_support( 'post-thumbnails' );
 
 		// This theme uses wp_nav_menu() in one location.
 		register_nav_menus( array(
@@ -128,9 +128,9 @@ function mybtsarmy_scripts() {
 		wp_enqueue_script( 'mybtsarmy-owl', get_template_directory_uri() . '/js/owl.carousel.min.js', array(), '20151215', true );
 	}
 
-	// if( !is_page('submit') ) {
-		wp_enqueue_script( 'mybtsarmy-jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' );
-		wp_enqueue_script( 'mybtsarmy-lightbox', get_template_directory_uri() . '/js/lightbox.min.js', array(), '20151215', true );
+	// if( !is_page('submit') || !is_front_page() || !is_home()) {
+	// 	wp_enqueue_script( 'mybtsarmy-jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' );
+		// wp_enqueue_script( 'mybtsarmy-lightbox', get_template_directory_uri() . '/js/lightbox.min.js', array(), '20151215', true );
 	// }
 	
 	// wp_enqueue_script( 'mybtsarmy-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );

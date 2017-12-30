@@ -20,7 +20,12 @@ $current_page = home_url( $wp->request );  ?>
 					
 					<div class="fan">
 						<div class="fan__thumb">
-							<?php the_post_thumbnail('full'); ?>	
+							<img src="<?php echo get_post_meta( $post->ID, 'fan_img_link', true); ?>" alt="<?php the_title(); ?>">	
+
+							<?php 
+
+
+							?>
 							
 						</div>
 

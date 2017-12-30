@@ -64,7 +64,7 @@ function fan_cpt_register() {
 		'supports' => ['title', 'thumbnail', 'editor']
 	];
 
-	register_post_type('fan', $args); // small letters
+	register_post_type('fan', $args); // small letters and singular
 }
 
 add_action('init', 'fan_cpt_register');
@@ -106,6 +106,9 @@ function fan_img_url_meta_callback( $post ) {
 
     <div>
         <div class="form__group">
+            <div class="thumb__preview">
+                <img src="<?php echo $fan_img_link; ?>" class="thumb_preview_img" alt="">
+            </div>
             <input type="text" name="fan_img_link" id="fan_img_link" class="form__control" placeholder="Link" value="<?php echo $fan_img_link; ?>">
         </div>
         <div class="form__group">
@@ -200,19 +203,10 @@ add_action( 'wp_head', 'mybtsarmy_pingback_header' );
 
 function list_body_class( $wp_classes, $extra_classes )
 {
-    // List of the only WP generated classes allowed
-    // $whitelist = array( 'home', 'blog', 'archive', 'single', 'category', 'tag', 'error404', 'logged-in', 'admin-bar' );
-
-    // List of the only WP generated classes that are not allowed
     $blacklist = array( 'blog' , 'hfeed');
 
-    // Filter the body classes
-    // Whitelist result: (comment if you want to blacklist classes)
-    // $wp_classes = array_intersect( $wp_classes, $whitelist );
-    // Blacklist result: (uncomment if you want to blacklist classes)
     $wp_classes = array_diff( $wp_classes, $blacklist );
 
-    // Add the extra classes back untouched
     return array_merge( $wp_classes, (array) $extra_classes );
 }
 add_filter( 'body_class', 'list_body_class', 10, 2 );
@@ -237,76 +231,64 @@ function my_enqueue() {
 
     if ( is_page( 'submit' ) ) {
 
-      wp_enqueue_script( 'ajax-script', get_template_directory_uri() . '/js/user-data.js', NULL, 1.0, true);
-      
-    //   wp_localize_script('ajax-script', 'magicalData', array(
-    //       'nonce' => wp_create_nonce('wp_rest'),
-    //       'siteURL' => get_site_url()
-    //   ));
+        wp_enqueue_script( 'ajax-script', get_template_directory_uri() . '/js/user-data.js', NULL, 1.0, true);
 
-    wp_localize_script( 'ajax-script', 'my_ajax_object',
-        array( 
-            'ajax_url' => admin_url( 'admin-ajax.php' ),
-            'nonce' => wp_create_nonce('user-submitted')
-        ) );
+
+        wp_localize_script( 'ajax-script', 'my_ajax_object',
+            array( 
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'nonce' => wp_create_nonce('user-submitted')
+            ) );
     } 
 }
 add_action( 'wp_enqueue_scripts', 'my_enqueue' );
 
 function process_user_generated_post() {
 
-    // check_ajax_referer( 'user-submitted-inquiry', 'security' );
     check_ajax_referer( 'user-submitted', 'security' );
 
 
-    // var_dump($_POST['security']);
+    $response_code = $_POST['captcha'];
 
-  $response_code = $_POST['captcha'];
-
-  $arr = [
-      'secret' => '6LccYT4UAAAAAJ38F9VZ0nJvbJ8G3MWkYdjxB67r',
-      'response' => $response_code
-  ];
+    $arr = [
+        'secret' => '6LccYT4UAAAAAJ38F9VZ0nJvbJ8G3MWkYdjxB67r',
+        'response' => $response_code
+    ];
 
 
-  function curl($url, $parameters) {
-      
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL, $url);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
-      curl_setopt($ch, CURLOPT_POST, true);
+    function curl($url, $parameters) {
+        
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameters));
+        curl_setopt($ch, CURLOPT_POST, true);
 
-      $headers = [];
-      $headers[] = "Content-Length:" . strlen(http_build_query($parameters));
+        $headers = [];
+        $headers[] = "Content-Length:" . strlen(http_build_query($parameters));
 
-      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-      return curl_exec($ch);
-  }
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        return curl_exec($ch);
+    }
 
-  $returned = curl("https://www.google.com/recaptcha/api/siteverify", $arr);
+    $returned = curl("https://www.google.com/recaptcha/api/siteverify", $arr);
 
-//   var_dump($returned);
-
-
-  $data = json_decode($returned);
-  $check = $data->success;
-
-//   var_dump($check);
+    $data = json_decode($returned);
+    $check = $data->success;
 
 
-  if($check) {
+    if($check) {
 
     $email = sanitize_email($_POST['email']);
 
-      $question_data = array(
+        $question_data = array(
         'post_title' => sanitize_text_field( $_POST[ 'name' ] ),
         'post_status' => 'draft',
         'post_type' => 'fan',
         'post_content' =>  sprintf('%s', 
             sanitize_text_field( $_POST[ 'message' ]))
-      );
+        );
 
 
         $post_id = wp_insert_post( $question_data, true );
@@ -316,21 +298,11 @@ function process_user_generated_post() {
             update_post_meta($post_id, 'fan_email', sanitize_text_field( $email ));
         }
 
-    //   if ( $post_id ) {
-    //       wp_set_object_terms(
-    //           $post_id,
-    //           sanitize_text_field( $_POST[ 'type' ] ),
-    //           'type',
-    //           true
-    //       );
-    //       update_post_meta( $post_id, 'contact_email', sanitize_email( $_POST[ 'data' ][ 'type' ] ) );
-    //   }
+        wp_send_json_success( $post_id );
 
-      wp_send_json_success( $post_id );
-
-      wp_die();
-      
-  }
+        wp_die();
+        
+    }
   
 }
 add_action( 'wp_ajax_process_user_generated_post', 'process_user_generated_post' );
@@ -407,13 +379,62 @@ function global_meta_box_callback($post) {
     <?php 
 }
 
+
+// add new post thumbnail
+
+function new_thumbnail_meta_box() {
+
+    $post_types = array ( 'post', 'btsmember' );
+
+    foreach( $post_types as $post_type )
+    {
+        add_meta_box(
+            'img_pos',
+            __( 'Featured Image' ),
+            'new_thumb_meta_box_callback',
+            $post_type,
+            'side',
+            'low'
+        );
+    }
+    
+}
+
+add_action( 'add_meta_boxes', 'new_thumbnail_meta_box' );
+
+function new_thumb_meta_box_callback($post) {
+
+    wp_nonce_field( basename( __FILE__ ), 'new_meta_thumb' );
+    $new_thumb = get_post_meta( $post->ID );
+
+    $_thumb_f = !empty( $new_thumb['_thumb_f'] ) ? esc_attr(  $new_thumb['_thumb_f'][0]  ) : null;
+    $_thumb_m = !empty( $new_thumb['_thumb_m'] ) ? esc_attr(  $new_thumb['_thumb_m'][0]  ) : null;
+
+    ?>
+
+    <div>
+        <div class="form__group">
+            <div class="thumb__preview">
+                <img src="<?php echo thumb_size($_thumb_f, 'm'); ?>" class="thumb_preview_img" alt="">
+            </div>
+            <input type="text" name="_thumb_m" id="_thumb_m" class="form__control" placeholder="thumbnail" value="<?php echo $_thumb_m; ?>"> 
+        </div>
+        <div class="form__group">            
+            <input type="text" name="_thumb_f" id="_thumb_f" class="form__control" placeholder="Large" value="<?php echo $_thumb_f; ?>"> 
+        </div>
+    </div>
+
+    <?php 
+}
+
 function global_meta_save( $post_id) {
     $is_autosave = wp_is_post_autosave( $post_id );
     $is_revision = wp_is_post_revision( $post_id );
     $is_valid_nonce = ( isset( $_POST[ 'global_meta_seo' ] ) && wp_verify_nonce( $_POST[ 'global_meta_seo' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+    $is_valid_nonce2 = ( isset( $_POST[ 'global_meta_thumb' ] ) && wp_verify_nonce( $_POST[ 'global_meta_thumb' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
 
 
-    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
+    if ( $is_autosave || $is_revision || !$is_valid_nonce || !$is_valid_nonce2 ) {
         return;
     }
 
@@ -422,6 +443,12 @@ function global_meta_save( $post_id) {
     }
     if ( isset( $_POST[ 'seo_title' ] ) ) {
         update_post_meta( $post_id, 'seo_title', sanitize_text_field( $_POST[ 'seo_title' ] ) );
+    }
+    if ( isset( $_POST[ '_thumb_m' ] ) ) {
+        update_post_meta( $post_id, '_thumb_m', sanitize_text_field( $_POST[ '_thumb_m' ] ) );
+    }
+    if ( isset( $_POST[ '_thumb_f' ] ) ) {
+        update_post_meta( $post_id, '_thumb_f', sanitize_text_field( $_POST[ '_thumb_f' ] ) );
     }
 }
 add_action( 'save_post', 'global_meta_save' );
@@ -493,7 +520,22 @@ function my_custom_fonts() {
         .hndle  {
             background: #ccc;
         }
+        .thumb_preview_img {
+            width: auto;
+            max-width: 100%;
+        }
     </style>';
 }
 
 add_action('admin_head', 'my_custom_fonts');
+
+
+					
+
+// change the filename
+
+function thumb_size($file, $add){
+    $ext = pathinfo($file, PATHINFO_EXTENSION);
+    $filename = str_replace(".".$ext, "", $file).$add.".".$ext;
+    return ($filename);
+}   
