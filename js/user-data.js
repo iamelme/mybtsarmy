@@ -1,21 +1,16 @@
-		
-
-
-
 
 			let userSubmitButton = document.getElementById( 'user-submit-btn' ),
-				importants = document.querySelectorAll('.important'),
-				message = document.querySelector('.message');
-
+					importants = document.querySelectorAll('.important'),
+					formLabels = document.querySelectorAll('.form__label'),
+					modal = document.querySelector('.modal'),
+					messageBody = document.querySelector('.message__body'),
+					message = document.querySelector('.message');
 
 			let adminAjaxRequest = function( formData, action ) {
 				
 				let xhp = new XMLHttpRequest();
-
-
 				xhp.open('POST', my_ajax_object.ajax_url + '?action='+ action );
-				xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-   				
+				xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");   				
 
 				xhp.onreadystatechange = function() {
 			      if (xhp.readyState == 4) {
@@ -67,34 +62,38 @@
 						
 						userSubmitButton.disabled = true;
 					}			
-
-				});
-				
-				
+				});				
 			} );
 
+			function removeClass(target, targetClass){
+				target.forEach(el =>{
+					el.classList.remove(targetClass);
+				});
+			}
 
 			function resetAll() {
 
 				let formControls = document.querySelectorAll('.form__control');
 
-				importants.forEach((important) => {
-					important.classList.remove('error');	
-				});
-
+				removeClass(importants, 'error');
+				removeClass(formLabels, 'active');
 
 				formControls.forEach((formControl) => {
 					formControl.value = "";
 				});
 
-				message.innerHTML = "Thank you! Your message has been sent";
+				modal.classList.add('show');
+				messageBody.innerHTML = `					
+					<p>Thank you! Your submission has been sent</p>
+				`;
 
 				grecaptcha.reset();
-				document.getElementById( 'user-post' ).reset();
+				document.getElementById( 'user-post' ).reset();				
 
-				setTimeout(() => {
+				setTimeout(() => {			
+						modal.classList.remove('show');			
 			      message.innerHTML = "";   
-			    }, 3800);
+			    }, 4800);
 			}
 
 			function recaptchaCallback() {

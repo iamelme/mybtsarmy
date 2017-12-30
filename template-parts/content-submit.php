@@ -10,21 +10,21 @@
 
 ?>
 
-<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-	<header class="entry-header">
-		<?php the_title( '<h1 class="section__title   t1 t-cnter">', '</h1>' ); ?>
-	</header>
+	<div>
+		<header class="entry-header">
+			<?php the_title( '<h1 class="section__title   t1 t-cnter">', '</h1>' ); ?>
+		</header>
 
-	<div class="page__content">
-		<?php
-			the_content();
+		<div class="page__content">
+			<?php
+				the_content();
 
-		?>
-	</div>
+			?>
+		</div>
 
-	<?php if(get_post_meta( $post->ID, 'submit_opt', true) == 0) : ?>
+		<?php if(get_post_meta( $post->ID, 'submit_opt', true) == 0) : ?>
 
-		<div class="message"></div>
+		
 		<div class="form-container">
 			
 			<form id="user-post" class="form">
@@ -60,9 +60,20 @@
 				</div>
 			</form>
 		</div>
-	</article><!-- #post-<?php the_ID(); ?> -->
+	</div>
 
-
+	<div class="modal">
+		<div class="modal__overlay">
+			
+		</div>
+		<div class="message">
+			<div class="message__header">
+				<img src="http://gph.to/2DBj9AH">
+			</div>
+			<div class="message__body">
+			</div>
+		</div>
+	</div>
 
 	<script>
 		'use strict';
