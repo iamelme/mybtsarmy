@@ -123,7 +123,7 @@ function mybtsarmy_scripts() {
 	wp_enqueue_style( 'mybtsarmy-style', get_template_directory_uri() . '/assets/css/style.css' );
 	wp_enqueue_style( 'mybtsarmy-fonts', 'https://fonts.googleapis.com/css?family=Fira+Sans:300,400,400i,500,700' );
 
-	if(is_front_page() || is_home() ) {
+	if(is_front_page() || is_home() || is_singular( 'btsmember' ) ) {
 		wp_enqueue_script( 'mybtsarmy-jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js', array(), '20151215', true );
 		wp_enqueue_script( 'mybtsarmy-owl', get_template_directory_uri() . '/js/owl.carousel.min.js', array(), '20151215', true );
 	}

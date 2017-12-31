@@ -37,11 +37,19 @@
 
 <?php wp_footer(); ?>
 
-<?php if(is_front_page() || is_home() ) : ?>
+<?php if(is_front_page() || is_home() || is_singular( 'btsmember' )) :
+	
+	$itemNum = 7;
+
+	if(is_singular( 'btsmember' )) {
+		$itemNum = 3;
+	}
+	
+?>
 	
 
 <script>
-		// document.addEventListener('DOMContentLoaded', (function(){
+		document.addEventListener('DOMContentLoaded', (function(){
 
 			$('.owl-carousel').owlCarousel({
 			    margin: 10,
@@ -57,13 +65,13 @@
 			       		autoplayTimeout: 2300
 				    },
 				    768 : {
-				       	items: 7,
+				       	items: <?php echo $itemNum; ?>,
 				    }
 				}
 			});
 
 
-		// })() );
+		})() );
 	</script>
 <?php endif; ?>
 </body>
