@@ -6,6 +6,11 @@
 			<img src="<?php echo get_post_meta( $post->ID, '_thumb_m', true); ?>" alt="<?php the_title(); ?>">
 		</div>
 		<h1 class="tx-cnter t-light"><?php the_title(); ?></h1>
+		<div class="share" style="float: none; display: flex; justify-content: center;">
+			<div class="fb-share-button share__btn" data-href="<?php echo $current_page; ?>" data-layout="button" data-action="share" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $current_page; ?>&amp;src=sdkpreparse">Share</a></div>
+
+			<a class="twitter-share-button share__btn" href="https://twitter.com/intent/tweet?text=<?php echo urlencode(the_title()) . ' #myBTSarmy'; ?>" data-size="large">Tweet</a>
+		</div>
 		
 	</header>
 
