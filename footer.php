@@ -42,14 +42,16 @@
 	$itemNum = 7;
 
 	if(is_singular( 'btsmember' )) {
-		$itemNum = 3;
+		$itemNum = 6;
 	}
 	
 ?>
 	
 
 <script>
+
 		document.addEventListener('DOMContentLoaded', (function(){
+			'user strict';			
 
 			$('.owl-carousel').owlCarousel({
 			    margin: 10,
@@ -68,6 +70,28 @@
 				       	items: <?php echo $itemNum; ?>,
 				    }
 				}
+			});
+			
+
+
+			let parentGal = document.querySelectorAll('.gallery');
+
+			parentGal.forEach((el,i)=>{
+				let galleryLink = el.getElementsByTagName('a');			
+
+				function setAttributes(el, attrs) {
+					for(var key in attrs) {
+						el.setAttribute(key, attrs[key]);
+					}
+				}
+
+				for(var x = 0; x < galleryLink.length; x++) {
+
+					let galCaption = galleryLink[x].parentNode.nextElementSibling;
+
+					setAttributes(galleryLink[x], {"data-lightbox" : el.id, "data-title" : galCaption != null ? galCaption.innerHTML : ''} );
+				}
+
 			});
 
 
