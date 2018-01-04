@@ -35,7 +35,8 @@ function bts_member_register() {
 		'show_ui' => true,
 		'public' => true,
 		'has_archive' => true,
-		'publicly_queryable' => true,
+        'publicly_queryable' => true,
+        'show_in_rest'  => true,
 		'query_var' => true,
 		'supports' => ['title', 'thumbnail', 'editor']
 	];
@@ -213,8 +214,9 @@ add_filter( 'body_class', 'list_body_class', 10, 2 );
 
 
 
-require get_template_directory() . '/inc/post-like.php';
+// post
 
+include(get_template_directory() . '/inc/post-like.php');
 
 
 // Default value for post like count
@@ -538,4 +540,179 @@ function thumb_size($file, $add){
     $ext = pathinfo($file, PATHINFO_EXTENSION);
     $filename = str_replace(".".$ext, "", $file).$add.".".$ext;
     return ($filename);
-}   
+} 
+
+
+
+// Register Questions
+
+
+function cpt_question_register() {
+	$labels = [
+		'name' => 'Quizzes',
+		'singular_name' => 'Quiz',
+		'add_new_item' => 'Add New Quiz',
+		'edit_item' => 'Edit Quiz'
+	];
+
+	$args = [
+		'labels' => $labels,
+		'show_ui' => true,
+		'public' => true,
+		'has_archive' => false,
+        'publicly_queryable' => true,
+        'show_in_rest'  => true,
+		'query_var' => true,
+		'supports' => ['title']
+	];
+
+	register_post_type('quiz', $args); // small letters
+}
+
+add_action('init', 'cpt_question_register');
+
+
+// add new question fields
+
+function question_field_meta_box() {
+
+
+    add_meta_box(
+        'question_field',
+        __( 'Question Field' ),
+        'question_meta_box_callback',
+        'quiz',
+        'normal',
+        'high'        
+    );   
+    
+}
+
+add_action( 'add_meta_boxes', 'question_field_meta_box' );
+
+function question_meta_box_callback($post) {
+
+    wp_nonce_field( basename( __FILE__ ), 'quest_meta' );
+    $question_meta = get_post_meta( $post->ID );
+
+    $_answers = !empty( $question_meta['answer'] ) ? esc_attr(  $question_meta['answer'][0]  ) : null;
+    $_correct_answer = !empty( $question_meta['_correct_answer'] ) ? esc_attr(  $question_meta['_correct_answer'][0]  ) : null;
+
+   
+    
+    // echo $_answers;
+
+
+    ?>
+
+    <div class="additional_ans">
+        <div class="form__group">  
+            <input type="text" name="_correct_answer" id="_correct_answer" class="form__control" value="<?php echo $_correct_answer; ?>">
+        </div>        
+        
+    </div>
+    <div class="form__group">
+            <button class="add_more">Add answer field</button>
+        </div>
+
+
+    <script>
+
+        var x = 0;
+
+        let ar = <?php echo json_encode($_answers); ?>,
+            addMore = document.querySelector('.add_more'),
+            container = document.querySelector('.additional_ans'),
+            newElem;
+           
+
+
+        addMore.addEventListener('click', (e) => {
+            e.preventDefault();
+            x++;
+            
+            newElem = `<div class="form__group">
+                <input type="text" name="answer[]" id="answer${ x }" class="form__control" value="" autocomplete="off">
+            </div>`;
+            
+            container.insertAdjacentHTML('beforeend', newElem);
+            
+        });        
+
+        if ( ar !== "" ) {
+            let wew = JSON.parse(ar.replace(/&quot;/g,'"'));
+            
+            if (wew.length > 0) {
+            
+                wew.forEach((idx) =>{                
+                    return container.insertAdjacentHTML('beforeend', `<input type="text" name="answer[]" id="answer${ x }" class="form__control" value="${idx}" autocomplete="off">`);
+                }); 
+            }
+        }
+
+    
+    </script>
+
+    <?php 
+}
+
+function question_meta_save( $post_id) {
+    $is_autosave = wp_is_post_autosave( $post_id );
+    $is_revision = wp_is_post_revision( $post_id );
+    $is_valid_nonce = ( isset( $_POST[ 'quest_meta' ] ) && wp_verify_nonce( $_POST[ 'quest_meta' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
+
+    if ( $is_autosave || $is_revision || !$is_valid_nonce ) {
+        return;
+    }
+
+    if ( isset( $_POST[ '_correct_answer' ] ) ) {
+        update_post_meta( $post_id, '_correct_answer', sanitize_text_field( $_POST[ '_correct_answer' ] ) );
+    }
+
+    if ( isset( $_POST[ 'answer' ] ) ) {
+
+        $question_answers = $_POST['answer'] ;
+        $filtered_answers = array();
+
+        foreach ( $question_answers as $answer ) { 
+            if($answer !== "" ) {
+                array_push( $filtered_answers, sanitize_text_field(  $answer ) );
+            }            
+        }
+
+
+        $question_answers = json_encode( $filtered_answers );
+
+
+        update_post_meta( $post_id, 'answer', sanitize_text_field( $question_answers ) );
+    }
+
+}
+add_action( 'save_post', 'question_meta_save' );
+
+
+
+
+ 
+function create_api_posts_meta_field() {
+ 
+    // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
+    register_rest_field( 'quiz', '_correct_answer', array(
+           'get_callback'    => '_correct_answer_get_term_meta_field',
+           'schema'          => null,
+        )
+    );
+}
+
+add_action( 'rest_api_init', 'create_api_posts_meta_field' );
+
+function _correct_answer_get_term_meta_field( $object ) {
+    //get the id of the post object array
+    $post_id = $object['id'];
+ 
+    //return the post meta
+    return get_post_meta( $post_id );
+    // return get_post_meta( $post->ID, '_correct_answer', true);
+}
+
+
