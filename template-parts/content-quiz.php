@@ -12,15 +12,20 @@
 
 	<div class="quiz">
 
-
-		<div class="quiz__inner">
-		
+		<div class="numbering">
 		</div>
+		<h1 class="question t1">
+		
+		</h1>
 
-		<div class="questions">
+		<div class="answers">
 
 			
 		
+		</div>
+
+		<div class="quiz__score">
+
 		</div>
 
 
@@ -46,73 +51,103 @@
 	<script>
 		'use strict';
 
-		let container = document.querySelector('.quiz__inner'),
+
+		let container = document.querySelector('.question'),
 			btnNext = document.querySelector('.btn__next'),
-			xhp = new XMLHttpRequest(),
-			numIdx = [],
+
+			questionLength = 0,
+			numIdx = 0,
+
 			randNum = 1,
 			pageNum = 1,
+			correctAns = [],
+			chooses = [],
 			maxPage = <?php echo $query->max_num_pages; ?>,
 			score = 0,
-			url = 'http://localhost/clean/wp-json/wp/v2/quiz?per_page=1';
-
-			
-
-			// function xCalls(data) {
-			// 	console.log(data[0]);
-			// }
+			url = 'http://localhost/clean/wp-json/wp/v2/quiz?per_page=3';
 
 
-			// xhp.open('GET', 'http://localhost/clean/wp-json/wp/v2/quiz/' + randNum, true );
-			// xhp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");   				
+			function fetchFun(index) {
+				console.log(url + `${ pageNum != 0 && pageNum < 4 ? `&page=${pageNum}` : ''}`);
 
-			// xhp.responseType = 'json';
-			// xhp.onreadystatechange = function() {
-			// 	if (xhp.readyState === 4 && xhp.status == 200) {
-			// 		xCalls(xhp.response);      
-			// 	} 
-			// }      
-			// xhp.send(null);  
-			
+				fetch(url + `&page=${randNum}`)
+				.then(res => res.json())	
+				.then(data => {
 
-			btnNext.addEventListener('click', (e)=> {
-				e.preventDefault();		
+					let quizzes = data[index],
+						ans = JSON.parse(quizzes._quiz_meta.answer),
+						question = quizzes.title.rendered;
 
-				if (pageNum <= maxPage) {		
+						questionLength = data.length;
 
-					fetch(url + '&page=' + pageNum)
-					.then(res => res.json())	
-					.then(data => {
 
-						let quizzes = data,
-							ans = JSON.parse(quizzes[0]._correct_answer.answer);
-
-						ans.forEach(obj => {
-
-							document.querySelector('.questions').innerHTML += `
-							<div class="form__group">
-								<label for="" class="">
-									<input type="radio" name="choice" value="${ obj }"> ${ obj }
-								</label>
-							</div>
-							`;
-						});
-
-						quizzes.map((quiz, idx) => {
-							container.innerHTML = quiz._correct_answer._correct_answer;		
-								
-							numIdx.push(quiz.id);	
-						});
-						
-
-					}).catch((error) => {
-						console.log(error);
+					ans.forEach((obj, idx) => {
+						document.querySelector('.answers').innerHTML += `
+						<div class="form__group">
+							<label for="choice${idx}" class="">
+								<input type="radio" id="choice${idx}" name="choices" value="${ obj }"> ${ obj }
+							</label>
+						</div>
+						`;
 					});
 
+					document.querySelector('.numbering').innerHTML = `Question ${ index + 1 } of ${ questionLength }`;
 
-					pageNum++;
-					document.querySelector('.questions').innerHTML = "";
-				} else { alert("mana")}
+					
+					container.innerHTML = question;
+
+					correctAns.push(quizzes._quiz_meta._correct_answer[0]);
+
+	
+
+				}).catch((error) => {
+					console.log(error);
+				});
+			}			
+
+			fetchFun(numIdx);
+
+			
+
+
+			function checkAnswer() {
+				let choices = document.getElementsByName('choices');
+
+				for ( var x = 0; x < choices.length; x++) {
+					if(choices[x].checked) {
+						chooses.push(choices[x].value);
+
+
+						if(choices[x].value == correctAns[numIdx]) {
+							alert('sakto');
+							score++;
+						}						
+					}
+				}
+			}
+
+
+			btnNext.addEventListener('click', (e)=> {
+				e.preventDefault();	
+
+				checkAnswer();				
+				numIdx++;
+				console.log(numIdx);
+
+				if(numIdx <= 2) {					
+					fetchFun(numIdx);
+					document.querySelector('.answers').innerHTML = '';					
+				}else {
+					alert('end');
+					document.querySelector('.quiz__score').innerHTML = `${score} out of ${questionLength}`;
+					document.querySelector('.question').innerHTML = '';
+					document.querySelector('.answers').innerHTML = '';
+					btnNext.innerHTML = 'Submit';
+					return false;
+				}
+				
 			});
+
+			
 		
 	</script>
