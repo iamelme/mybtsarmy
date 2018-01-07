@@ -386,7 +386,7 @@ function global_meta_box_callback($post) {
 
 function new_thumbnail_meta_box() {
 
-    $post_types = array ( 'post', 'btsmember' );
+    $post_types = array ( 'post', 'btsmember', 'quiz' );
 
     foreach( $post_types as $post_type )
     {
@@ -417,7 +417,7 @@ function new_thumb_meta_box_callback($post) {
     <div>
         <div class="form__group">
             <div class="thumb__preview">
-                <img src="<?php echo thumb_size($_thumb_f, 'm'); ?>" class="thumb_preview_img" alt="">
+                <img src="<?php echo thumb_size($_thumb_f, 'm') == '' ? thumb_size($_thumb_f, 'm') :  $_thumb_m ; ?>" class="thumb_preview_img" alt="">
             </div>
             <input type="text" name="_thumb_m" id="_thumb_m" class="form__control" placeholder="thumbnail" value="<?php echo $_thumb_m; ?>"> 
         </div>
@@ -612,7 +612,7 @@ function question_meta_box_callback($post) {
         
     </div>
     <div class="form__group">
-            <button class="add_more">Add answer field</button>
+            <button class="add_more button">Add answer field</button>
         </div>
 
 
@@ -697,7 +697,7 @@ add_action( 'save_post', 'question_meta_save' );
 function create_api_posts_meta_field() {
  
     // register_rest_field ( 'name-of-post-type', 'name-of-field-to-return', array-of-callbacks-and-schema() )
-    register_rest_field( 'quiz', '_correct_answer', array(
+    register_rest_field( 'quiz', '_quiz_meta', array(
            'get_callback'    => '_correct_answer_get_term_meta_field',
            'schema'          => null,
         )
